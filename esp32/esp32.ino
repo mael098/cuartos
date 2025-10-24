@@ -6,9 +6,9 @@
 #include <ESPAsyncWebServer.h>
 
 // Pines
-#define ST1 27
-#define ST2 26
-#define ST3 25
+const int ST1 = 34;
+const int ST2 = 35;
+const int ST3 = 32;
 
 // Red WiFi
 const char* SSID = "Conmutación";
@@ -40,7 +40,7 @@ void setup() {
 
   // Web: mostrar datos
   server.on("/temp", HTTP_GET, [](AsyncWebServerRequest *request) {
-    int a1 = analogRead(ST1);
+    int a1 = analogRead(34);
     int a2 = analogRead(ST2);
     int a3 = analogRead(ST3);
 
@@ -64,12 +64,14 @@ void setup() {
 }
 
 void loop() {
+    delay(5000);
     int a1 = analogRead(ST1);
     int a2 = analogRead(ST2);
     int a3 = analogRead(ST3);
-
-    int c1 = map(a1, 20, 358, -40, 125);
-    int c2 = map(a2, 20, 358, -40, 125);
-    int c3 = map(a3, 20, 358, -40, 125);
-    Serial.println("["+String(c1)+","+String(c2)+","+String(c3)+"]");
+    Serial.println("Analog Read: ["+String(a1)+","+String(a2)+","+String(a3)+"]");
+    
+    int c1 = (a1 * 5.0 * 100.0) / 1024.0;
+    int c2 = (a2 * 5.0 * 100.0) / 1024.0;
+    int c3 = (a3 * 5.0 * 100.0) / 1024.0;
+    Serial.println("Celcius: ["+String(c1)+","+String(c2)+","+String(c3)+"]");
 }
