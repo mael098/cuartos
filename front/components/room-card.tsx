@@ -50,7 +50,7 @@ export function RoomCard({ room, onUpdate }: RoomCardProps) {
                 <Settings className="h-4 w-4" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card">
+            <DialogContent className="bg-background">
               <DialogHeader>
                 <DialogTitle className="text-card-foreground">
                   Configurar Umbrales - {room.name}
@@ -69,8 +69,8 @@ export function RoomCard({ room, onUpdate }: RoomCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Temperature Chart */}
-        <div className="rounded-lg bg-secondary/30 p-3">
-          <p className="text-xs text-muted-foreground mb-2">
+        <div className="rounded-lg bg-foreground/10 p-3">
+          <p className="text-xs text-foreground mb-2">
             Historial (últimas 24h)
           </p>
           <TemperatureChart data={room.history} />
@@ -79,7 +79,7 @@ export function RoomCard({ room, onUpdate }: RoomCardProps) {
         {/* Controls */}
         <div className="space-y-3 pt-2">
           {/* Power Switch */}
-          <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
+          <div className="flex items-center justify-between rounded-lg p-3">
             <ManualToggle room={room} onUpdate={onUpdate} />
           </div>
         </div>

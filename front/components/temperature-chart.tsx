@@ -10,9 +10,9 @@ export function TemperatureChart({ data }: TemperatureChartProps) {
   return (
     <ResponsiveContainer width="100%" height={120}>
       <LineChart data={data}>
-        <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+        <XAxis dataKey="time" stroke="#ededed" fontSize={10} tickLine={false} axisLine={false} />
         <YAxis
-          stroke="hsl(var(--muted-foreground))"
+          stroke="#ededed"
           fontSize={10}
           tickLine={false}
           axisLine={false}
@@ -35,7 +35,7 @@ export function TemperatureChart({ data }: TemperatureChartProps) {
             return null
           }}
         />
-        <Line type="monotone" dataKey="temp" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="temp" stroke="#ededed" strokeWidth={2} dot={true} />
       </LineChart>
     </ResponsiveContainer>
   )

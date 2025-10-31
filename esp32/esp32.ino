@@ -11,8 +11,10 @@ const int ST2 = 35;
 const int ST3 = 32;
 
 // Red WiFi
-const char* SSID = "Conmutación";
-const char* PASSWORD = "3C046109F331.";
+//const char* SSID = "Conmutación";
+//const char* PASSWORD = "3C046109F331.";
+const char* SSID = "ツ";
+const char* PASSWORD = "12345678";
 
 WiFiClient espClient;
 
@@ -53,6 +55,7 @@ void setup() {
     request->send(200, "application/json", json);
   });
 
+  // prueba de conexion
   // server.on("/led", HTTP_GET, [](AsyncWebServerRequest *request) {
   //   digitalWrite(LED, HIGH);
   //   delay(2000);
