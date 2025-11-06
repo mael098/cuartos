@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { RoomCard } from "@/components/room-card"
 
 export type RoomData = {
@@ -74,6 +74,29 @@ const initialRooms: RoomData[] = [
 
 export function TemperatureDashboard() {
   const [rooms, setRooms] = useState<RoomData[]>(initialRooms)
+
+  useEffect(() => {
+    const fetchTemperatures = async () => {
+      try {
+        const response = await fetch('/temp')
+        const temps = await response.json()
+        
+        if (Array.isArray(temps) && temps.length >= 3) {
+          setRooms((prev) => prev.map((room, index) => ({
+            ...room,
+            currentTemp: Math.round(temps[index] * 10) / 10
+          })))
+        }
+      } catch (error) {
+        console.error('Error fetching temperatures:', error)
+      }
+    }
+
+    fetchTemperatures()
+    const interval = setInterval(fetchTemperatures, 5000) // Actualiza cada 5 segundos
+
+    return () => clearInterval(interval)
+  }, [])
 
   const updateRoom = (roomId: string, updates: Partial<RoomData>) => {
     setRooms((prev) => prev.map((room) => (room.id === roomId ? { ...room, ...updates } : room)))
