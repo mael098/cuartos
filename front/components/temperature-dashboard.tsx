@@ -78,7 +78,7 @@ export function TemperatureDashboard() {
   useEffect(() => {
     const fetchTemperatures = async () => {
       try {
-        const response = await fetch('/temp')
+        const response = await fetch('http://localhost:8080/temp')
         const temps = await response.json()
         
         if (Array.isArray(temps) && temps.length >= 3) {
@@ -93,7 +93,7 @@ export function TemperatureDashboard() {
     }
 
     fetchTemperatures()
-    const interval = setInterval(fetchTemperatures, 5000) // Actualiza cada 5 segundos
+    const interval = setInterval(fetchTemperatures, 5_000) // Actualiza cada 5 segundos
 
     return () => clearInterval(interval)
   }, [])

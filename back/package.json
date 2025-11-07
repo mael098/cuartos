@@ -1,8 +1,8 @@
 {
-  "name": "ventilacion",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Simple HTTP server with TypeScript",
-  "main": "dist/server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/mael098/cuartos#readme",
   "dependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "serialport": "^13.0.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",

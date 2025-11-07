@@ -1,14 +1,51 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { parse } from 'url';
 import { promisify } from 'util';
+import { SerialPort, ReadlineParser } from 'serialport'
+import { randomUUID } from "node:crypto"
 
-const PORT = 3000;
+const portName = 'COM4'
 
-// In-memory storage for temperature (just for demo purposes)
-let currentTemp = 25.5;
-function getTemperatures() {
-    return [Math.random() * 30, Math.random() * 30, Math.random() * 30];
+export const port = new SerialPort({
+    path: portName,
+    baudRate: 9600
+})
+
+export const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
+
+port.on('error', err => {
+    console.error('Error:', err.message)
+})
+
+port.on('open', () => {
+    console.log(`Conectado al puerto ${portName}`)
+})
+
+export function getTemp() {
+    const { promise, reject, resolve } = Promise.withResolvers<[number,number,number]>()
+
+    const id = randomUUID()
+    port.write(`get_temp:${id}\n`);
+
+    const listener = (chunk: string) => {
+        const data = JSON.parse(chunk)
+
+        if (data.event !== 'get_temp' || data.id !== id) return 
+
+        resolve(data.data)
+        parser.removeListener('data', listener)
+    }
+
+    parser.on('data', listener)
+    setTimeout(() => {
+        reject(new Error('Time end'))
+        parser.removeListener('data', listener)
+    }, 3_000)
+
+    return promise
 }
+
+const PORT = 8080;
 
 // Helper function to parse JSON body
 const parseBody = (req: IncomingMessage): Promise<any> => {
@@ -53,7 +90,12 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
   // Routes
   if (pathname === '/temp' && req.method === 'GET') {
     // GET /temp - Get current temperature
-    sendJson(res, 200, getTemperatures());
+    try {
+      sendJson(res, 200, await getTemp());
+    } catch (error) {
+      console.error(error);
+      sendJson(res, 200, [0,0,0]);
+    }
   } 
   else if (pathname === '/action' && req.method === 'POST') {
     // POST /action - Perform an action
