@@ -1,15 +1,15 @@
 #include "DHT.h"
 
-#define DHTPIN1 2
-#define DHTPIN2 3
+#define DHTPIN1 9
+#define DHTPIN2 10
 #define DHTTYPE DHT11
 
 DHT dht1(DHTPIN1,DHTTYPE);
-// DHT dht2(DHTPIN2,DHTTYPE);
+DHT dht2(DHTPIN2,DHTTYPE);
 
 void setup() {
     dht1.begin();
-    // dht2.begin();
+    dht2.begin();
     Serial.begin(9600);
     while (!Serial) { }
     Serial.println("{\"event\":\"ready\"}");
@@ -21,14 +21,14 @@ void loop() {
         data.trim();
         if (data.startsWith("get_temp")) {
             float t1 = dht1.readTemperature();
-            // float t2 = dht2.readTemperature();
+            float t2 = dht2.readTemperature();
             Serial.println(
                 String("{")
                 + "\"event\":\"get_temp\","
                 +"\"id\":\""+getId(data)+"\","
                 +"\"data\":["
                     +String(t1)+","
-                    +String(t1)+","
+                    +String(t2)+","
                     +String(t1)
                 +"]}"
             );
@@ -37,6 +37,7 @@ void loop() {
 }
 
 String getId(String str) {
-    return str.substring(str.indexOf(":") + 1);
+    int i = str.indexOf(":");
+    String id = str.substring(i+1);
+    return id;
 }
-

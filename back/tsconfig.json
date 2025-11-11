@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "es2024",
     "module": "esnext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node"
   },
