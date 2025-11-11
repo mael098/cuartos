@@ -17,6 +17,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toggle-group": "1.1.11",
     "@serialport/parser-readline": "^13.0.0",
+    "@simplestack/store": "^0.6.4",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "jotai": "^2.15.1",

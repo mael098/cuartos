@@ -1,15 +1,19 @@
 "use client"
 
+import { RoomId, roomsStore } from "@/app/store"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useStoreValue } from "@simplestack/store/react"
 
 type TemperatureChartProps = {
-  data: Array<{ time: string; temp: number }>
+  id: RoomId
 }
 
-export function TemperatureChart({ data }: TemperatureChartProps) {
+export function TemperatureChart({ id }: TemperatureChartProps) {
+  const history = useStoreValue(roomsStore.select(id)!.select!('history'))!
+
   return (
     <ResponsiveContainer width="100%" height={120}>
-      <LineChart data={data}>
+      <LineChart data={history}>
         <XAxis dataKey="time" stroke="#ededed" fontSize={10} tickLine={false} axisLine={false} />
         <YAxis
           stroke="#ededed"

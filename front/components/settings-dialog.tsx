@@ -10,17 +10,16 @@ import {
 } from "@/components/Dialog";
 import { Button } from "@/components/button";
 import { SettingsIcon } from "lucide-react";
-import type { RoomData } from "@/components/temperature-dashboard";
+import { RoomId } from "@/app/store";
 import { ThresholdSettings } from "@/components/threshold-settings";
+import { roomsStore } from "@/app/store";
+import { useStoreValue } from "@simplestack/store/react";
 
 type SettingsDialogProps = {
-  room: RoomData;
-  onUpdate: (roomId: string, updates: Partial<RoomData>) => void;
+  id: RoomId;
 };
-export function SettingsDialog({ room, onUpdate }: SettingsDialogProps) {
-    const handleThresholdsUpdate = (thresholds: RoomData["thresholds"]) => {
-    onUpdate(room.id, { thresholds });
-  };
+export function SettingsDialog({ id }: SettingsDialogProps) {
+  const room = useStoreValue(roomsStore.select(id)!.select!('name'))!
     return (<Dialog>
             <DialogTrigger asChild>
               <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -30,15 +29,14 @@ export function SettingsDialog({ room, onUpdate }: SettingsDialogProps) {
             <DialogContent className="bg-background">
               <DialogHeader>
                 <DialogTitle className="text-card-foreground">
-                  Configurar Umbrales - {room.name}
+                  Configurar Umbrales - {room}
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground">
                   Define las temperaturas para cada velocidad del ventilador
                 </DialogDescription>
               </DialogHeader>
               <ThresholdSettings
-                thresholds={room.thresholds}
-                onUpdate={handleThresholdsUpdate}
+                id={id}
               />
             </DialogContent>
           </Dialog>)
