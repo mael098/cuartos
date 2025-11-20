@@ -1,4 +1,5 @@
-import { getTemp } from './serial.ts';
+import { Mode } from './prisma/generated/enums.ts';
+import { requestSerial } from './serial.ts';
 import Express from 'express';
 
 const PORT = 8080;
@@ -7,7 +8,7 @@ const app = Express();
 
 app.get('/temp', async (req, res) => {
   try {
-    const temp = await getTemp();
+    const temp = await requestSerial("set_high");
     res.json(temp);
   } catch (error) {
     console.error(error);

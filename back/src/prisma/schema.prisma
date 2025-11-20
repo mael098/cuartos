@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider               = "prisma-client"
+  output                 = "./generated"
+  engineType             = "client"
+  runtime                = "nodejs"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+  previewFeatures        = ["typedSql"]
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Mode {
+  auto
+  manual
+}
+
+model Room {
+  id     String  @id
+  mode   Mode    @default(manual)
+  name   String
+  speed  Int     @default(0)
+  low    Int     @default(20)
+  medium Int     @default(25)
+  high   Int     @default(30)
+
+  history History[]
+
+  @@map("rooms")
+}
+
+model History {
+  room_id String
+  date    DateTime
+  temp    Int
+
+  room Room @relation(fields: [room_id], references: [id])
+
+  @@id([room_id, date])
+  @@map("history")
+}
