@@ -1,6 +1,6 @@
 import { SerialPort, ReadlineParser } from "serialport";
-import { randomUUID, UUID } from "node:crypto";
-import { Mode } from "./prisma/generated/enums";
+import { randomUUID } from "node:crypto";
+import type { CommandData, CommandMap, CommandName, CommandResponse } from "./types";
 
 const portName = "COM4";
 
@@ -9,19 +9,6 @@ export const port = new SerialPort({
     baudRate: 9600,
 });
 
-type CommandMap = {
-    get_temp: { params: [], data: [number, number, number] };
-    set_low: { params: [], data: void };
-    set_medium: { params: [], data: void };
-    set_high: { params: [], data: void };
-    set_mode: { params: [Mode], data: void };
-    get_mode: { params: [], data: Mode };
-};
-type CommandName = keyof CommandMap;
-type CommandData<T extends CommandName> = CommandMap[T]['data'];
-type CommandResponse<T extends string> = T extends CommandName
-    ? { event: T; id: UUID; data: CommandMap[T]['data'] }
-    : { event: string; id: UUID; data: unknown };
 
 function sendCommand(command: CommandName, id: string, ...params: any[]) {
     port.write(`${JSON.stringify({ event: command, id, params })}\n`);

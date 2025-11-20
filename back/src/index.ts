@@ -1,21 +1,34 @@
-import { Mode } from './prisma/generated/enums.ts';
 import { requestSerial } from './serial.ts';
-import Express from 'express';
+import Express, { Request, Response } from 'express';
+import { CommandName, CommandParams } from './types.ts';
 
 const PORT = 8080;
 
 const app = Express();
 
-app.get('/temp', async (req, res) => {
-  try {
-    const temp = await requestSerial("set_high");
-    res.json(temp);
-  } catch (error) {
-    console.error(error);
-    console.log("manejado");
-    res.status(500).json({ error: 'Failed to get temperature' });
+app.use(Express.json());
+
+function handle<T extends CommandName>(command: T) {
+  return async (req: Request<{}, {}, CommandParams<T>>, res: Response) => {
+    try {
+      const body = req.body ?? [];
+      res.json(await requestSerial(command, ...body));
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to set mode' });
+    }
   }
-})
+}
+
+app.get('/temp', handle("get_temp"));
+
+app.get('/mode', handle("get_mode"));
+app.get('/speed', handle("get_speed"));
+app.get('/thresholds', handle("get_thresholds"));
+
+app.post("/mode", handle("set_mode"));
+app.post("/speed", handle("set_speed"));
+app.post("/thresholds", handle("set_thresholds"));
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`)
