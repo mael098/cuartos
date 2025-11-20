@@ -27,7 +27,7 @@ enum Mode {
 model Room {
   id     String  @id
   mode   Mode    @default(manual)
-  name   String
+  name   String  @unique
   speed  Int     @default(0)
   low    Int     @default(20)
   medium Int     @default(25)

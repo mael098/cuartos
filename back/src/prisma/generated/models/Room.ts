@@ -260,17 +260,17 @@ export type RoomOrderByWithRelationInput = {
 
 export type RoomWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  name?: string
   AND?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
   OR?: Prisma.RoomWhereInput[]
   NOT?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
   mode?: Prisma.EnumModeFilter<"Room"> | $Enums.Mode
-  name?: Prisma.StringFilter<"Room"> | string
   speed?: Prisma.IntFilter<"Room"> | number
   low?: Prisma.IntFilter<"Room"> | number
   medium?: Prisma.IntFilter<"Room"> | number
   high?: Prisma.IntFilter<"Room"> | number
   history?: Prisma.HistoryListRelationFilter
-}, "id">
+}, "id" | "name">
 
 export type RoomOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

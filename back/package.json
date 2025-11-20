@@ -24,6 +24,7 @@
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "7.0.0",
     "@prisma/client": "7.0.0",
+    "cron": "4.3.4",
     "express": "5.1.0",
     "serialport": "13.0.0"
   },

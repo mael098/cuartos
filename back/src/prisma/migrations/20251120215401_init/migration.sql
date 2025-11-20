@@ -18,3 +18,6 @@ CREATE TABLE "history" (
     PRIMARY KEY ("room_id", "date"),
     CONSTRAINT "history_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "rooms_name_key" ON "rooms"("name");
