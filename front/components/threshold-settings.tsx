@@ -1,20 +1,19 @@
 "use client"
 
-import { useState } from "react"
 import { SimpleInput } from "@/components/inputs"
 import { Button } from "@/components/button"
-import type { RoomData } from "@/components/temperature-dashboard"
+import { RoomId, roomsStore } from "@/app/store"
+import { useStoreValue } from "@simplestack/store/react"
 
 type ThresholdSettingsProps = {
-  thresholds: RoomData["thresholds"]
-  onUpdate: (thresholds: RoomData["thresholds"]) => void
+  id: RoomId
 }
 
-export function ThresholdSettings({ thresholds, onUpdate }: ThresholdSettingsProps) {
-  const [localThresholds, setLocalThresholds] = useState(thresholds)
+export function ThresholdSettings({ id }: ThresholdSettingsProps) {
+  const thresholds = useStoreValue(roomsStore.select(id)!.select!('thresholds'))!
 
   const handleSave = () => {
-    onUpdate(localThresholds)
+    roomsStore.select(id)!.select!('thresholds').set(thresholds)
   }
 
   return (
@@ -27,12 +26,9 @@ export function ThresholdSettings({ thresholds, onUpdate }: ThresholdSettingsPro
           <SimpleInput
             id="low"
             type="number"
-            value={localThresholds.low}
+            value={thresholds.low}
             onChange={(e) =>
-              setLocalThresholds({
-                ...localThresholds,
-                low: Number(e.target.value),
-              })
+              roomsStore.select(id)!.select!('thresholds').select!('low').set(Number(e.target.value))
             }
             className="bg-secondary"
           />
@@ -51,19 +47,16 @@ export function ThresholdSettings({ thresholds, onUpdate }: ThresholdSettingsPro
           <SimpleInput
             id="medium"
             type="number"
-            value={localThresholds.medium}
+            value={thresholds.medium}
             onChange={(e) =>
-              setLocalThresholds({
-                ...localThresholds,
-                medium: Number(e.target.value),
-              })
+              roomsStore.select(id)!.select!('thresholds').select!('medium').set(Number(e.target.value))
             }
             className="bg-secondary"
           />
           <span className="text-muted-foreground">°C</span>
         </div>
         <p className="text-xs text-muted-foreground">
-          El ventilador funcionará a velocidad media entre {localThresholds.low}°C y este valor
+          El ventilador funcionará a velocidad media entre {thresholds.low}°C y este valor
         </p>
       </div>
 
@@ -75,19 +68,16 @@ export function ThresholdSettings({ thresholds, onUpdate }: ThresholdSettingsPro
           <SimpleInput
             id="high"
             type="number"
-            value={localThresholds.high}
+            value={thresholds.high}
             onChange={(e) =>
-              setLocalThresholds({
-                ...localThresholds,
-                high: Number(e.target.value),
-              })
+              roomsStore.select(id)!.select!('thresholds').select!('high').set(Number(e.target.value))
             }
             className="bg-secondary"
           />
           <span className="text-muted-foreground">°C</span>
         </div>
         <p className="text-xs text-muted-foreground">
-          El ventilador funcionará a velocidad alta cuando la temperatura supere {localThresholds.medium}°C
+          El ventilador funcionará a velocidad alta cuando la temperatura supere {thresholds.medium}°C
         </p>
       </div>
 
