@@ -1,43 +1,51 @@
 #include "DHT.h"
+#include "ArduinoJson.h"
 
 #define DHTPIN1 9
 #define DHTPIN2 10
 #define DHTTYPE DHT11
 
-DHT dht1(DHTPIN1,DHTTYPE);
-DHT dht2(DHTPIN2,DHTTYPE);
+DHT dht1(DHTPIN1, DHTTYPE);
+DHT dht2(DHTPIN2, DHTTYPE);
 
 void setup() {
-    dht1.begin();
-    dht2.begin();
-    Serial.begin(9600);
-    while (!Serial) { }
-    Serial.println("{\"event\":\"ready\"}");
+  dht1.begin();
+  dht2.begin();
+  Serial.begin(9600);
+  while (!Serial) {
+  }
+  Serial.println("{\"event\":\"ready\"}");
 }
 
 void loop() {
-    if (Serial.available()) {
-        String data = Serial.readStringUntil('\n');
-        data.trim();
-        if (data.startsWith("get_temp")) {
-            float t1 = dht1.readTemperature();
-            float t2 = dht2.readTemperature();
-            Serial.println(
-                String("{")
-                + "\"event\":\"get_temp\","
-                +"\"id\":\""+getId(data)+"\","
-                +"\"data\":["
-                    +String(t1)+","
-                    +String(t2)+","
-                    +String(t1)
-                +"]}"
-            );
-        }
-    }
-}
+  if (Serial.available()) {
+    // recibe signal
+    String data = Serial.readStringUntil('\n');
+    data.trim();
+    // process request
+    StaticJsonDocument<128> request;
+    DeserializationError error = deserializeJson(request, data);
+    if (error) return;
 
-String getId(String str) {
-    int i = str.indexOf(":");
-    String id = str.substring(i+1);
-    return id;
+    // --------------
+    // GET TEMP
+    // --------------
+    if (request["event"] == "get_temp") {
+      
+      float t1 = dht1.readTemperature();
+      float t2 = dht2.readTemperature();
+
+      StaticJsonDocument<512> response;
+      response["event"] = "get_temp";
+      response["id"] = request["id"];
+      JsonArray data = response["data"].to<JsonArray>();
+      data.add(t1);
+      data.add(t2);
+      data.add(t1);
+
+      String jsonString;
+      serializeJson(doc, jsonString);
+      Serial.println(jsonString);
+    }
+  }
 }

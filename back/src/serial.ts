@@ -1,5 +1,5 @@
 import { SerialPort, ReadlineParser } from "serialport";
-import { randomUUID } from "node:crypto";
+import { randomUUID, type UUID } from "node:crypto";
 import type {
   CommandData,
   CommandMap,
@@ -14,7 +14,7 @@ export const port = new SerialPort({
   baudRate: 9600,
 });
 
-function sendCommand(command: CommandName, id: string, ...params: any[]) {
+function sendCommand(command: CommandName, id: UUID, ...params: any[]) {
   port.write(`${JSON.stringify({ event: command, id, params })}\n`);
 }
 
