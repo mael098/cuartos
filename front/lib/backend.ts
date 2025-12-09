@@ -13,7 +13,7 @@ const ROOM_ORDER: RoomId[] = [
   ROOM_KEYS.ROOM2,
   ROOM_KEYS.ROOM3,
 ];
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 function roomIndex(id: RoomId) {
   return ROOM_ORDER.indexOf(id);
