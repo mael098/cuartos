@@ -3,14 +3,23 @@ import { Fan } from "lucide-react";
 import { Button } from "./button";
 import { FAN_MODES, RoomId, roomsStore } from "@/app/store";
 import { useStoreValue } from "@simplestack/store/react";
+import { setRoomMode, setRoomSpeed } from "@/lib/backend";
 
 interface Props {
   id: RoomId
 }
 export function ManualToggle({ id }: Props) {
   const mode = useStoreValue(roomsStore.select(id)!.select!('mode'))!
+  const handleModeChange = async (value: string) => {
+    const nextMode = value as typeof FAN_MODES.AUTO | typeof FAN_MODES.MANUAL
+    try {
+      await setRoomMode(id, nextMode)
+    } catch (error) {
+      console.error('No se pudo actualizar el modo', error)
+    }
+  }
   return (
-    <Tabs className="TabsRoot" defaultValue={mode} >
+    <Tabs className="TabsRoot" value={mode} onValueChange={handleModeChange}>
       <TabsList className="TabsList bg-background" aria-label="Manage your account">
         <TabsTrigger className="TabsTrigger bg-background" value={FAN_MODES.AUTO}>
           Automático
@@ -32,38 +41,40 @@ function ManualTab({ id }: ManualTabProps) {
   const fanSpeed = useStoreValue(roomsStore.select(id)!.select!('fanSpeed'))!
 
   const handleSpeedChange = (speed: number) => {
-    roomsStore.select(id).select?.('fanSpeed').set(speed)
+    setRoomSpeed(id, speed).catch((error) =>
+      console.error('No se pudo actualizar la velocidad', error)
+    )
   };
 
   return (
     <TabsContent className="TabsContent" value={FAN_MODES.MANUAL}>
-        <div className="rounded-lg bg-secondary/30 p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <label className="text-sm text-card-foreground">
-              Velocidad Manual
-            </label>
-            <div className="flex items-center gap-2">
-              <Fan className="h-4 w-4 text-accent" />
-              <span className="text-sm font-medium text-card-foreground">
-                Nivel {fanSpeed}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {[1, 2, 3].map((speed) => (
-              <Button
-                key={speed}
-                variant={fanSpeed === speed ? "default" : "outline"}
-                size="sm"
-                className="flex-1"
-                onClick={() => handleSpeedChange(speed)}
-              >
-                {speed}
-              </Button>
-            ))}
+      <div className="rounded-lg bg-secondary/30 p-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="text-sm text-card-foreground">
+            Velocidad Manual
+          </label>
+          <div className="flex items-center gap-2">
+            <Fan className="h-4 w-4 text-accent" />
+            <span className="text-sm font-medium text-card-foreground">
+              Nivel {fanSpeed}
+            </span>
           </div>
         </div>
-      </TabsContent>
+        <div className="flex gap-2">
+          {[1, 2, 3].map((speed) => (
+            <Button
+              key={speed}
+              variant={fanSpeed === speed ? "default" : "outline"}
+              size="sm"
+              className="flex-1"
+              onClick={() => handleSpeedChange(speed)}
+            >
+              {speed}
+            </Button>
+          ))}
+        </div>
+      </div>
+    </TabsContent>
   )
 }
 

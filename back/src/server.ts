@@ -3,12 +3,18 @@ import Express from "express";
 import type { Request, Response } from "express";
 import type { CommandName, CommandParams } from "./types.ts";
 import "./sync.ts";
+import cors from "cors";
 
 const PORT = 8080;
 
 const app = Express();
 
 app.use(Express.json());
+app.use(
+  cors({
+    origin: process.env.FRONT_ORIGIN ?? "*",
+  })
+);
 
 function handle<T extends CommandName>(command: T) {
   return async (req: Request<{}, {}, CommandParams<T>>, res: Response) => {
