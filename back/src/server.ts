@@ -108,7 +108,7 @@ async function handleDB<T extends CommandName>(
   ...params: CommandParams<T>
 ) {
   // -------------
-  // Get Mode
+  // Set Mode
   // -------------
   if (command == "set_mode") {
     const [mode1, mode2, mode3] = params as CommandParams<"set_mode">;
@@ -132,7 +132,7 @@ async function handleDB<T extends CommandName>(
     } catch {}
   }
   // -------------
-  // Get Speed
+  // Set Speed
   // -------------
   if (command == "set_speed") {
     const [speed1, speed2, speed3] = params as CommandParams<"set_speed">;
@@ -156,7 +156,7 @@ async function handleDB<T extends CommandName>(
     } catch {}
   }
   // -------------
-  // Get Threshold
+  // Set Threshold
   // -------------
   if (command == "set_threshold") {
     const [
@@ -191,7 +191,7 @@ async function fromDB<T extends CommandName>(
   // -------------
   // Get Mode
   // -------------
-  if (command == "set_mode") {
+  if (command == "get_mode") {
     const rooms = await db.room.findMany({
       select: {
         id: true,
@@ -207,7 +207,7 @@ async function fromDB<T extends CommandName>(
   // -------------
   // Get Speed
   // -------------
-  if (command == "set_speed") {
+  if (command == "get_speed") {
     const rooms = await db.room.findMany({
       select: {
         id: true,
@@ -223,7 +223,7 @@ async function fromDB<T extends CommandName>(
   // -------------
   // Get Threshold
   // -------------
-  if (command == "set_threshold") {
+  if (command == "get_threshold") {
     const rooms = await db.room.findMany({
       select: {
         id: true,
