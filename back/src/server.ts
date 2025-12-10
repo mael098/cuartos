@@ -1,7 +1,7 @@
 import { requestSerial } from "./serial.ts";
 import Express from "express";
 import type { Request, Response } from "express";
-import type { CommandName, CommandParams } from "./types.ts";
+import type { CommandData, CommandName, CommandParams } from "./types.ts";
 import "./sync.ts";
 import cors from "cors";
 import { db } from "./prisma/db.ts";
@@ -23,17 +23,22 @@ app.use(
 function handle<T extends CommandName>(command: T) {
   return async (req: Request<{}, {}, CommandParams<T>>, res: Response) => {
     try {
+      const body = req.body ?? [];
+      res.json(await requestSerial(command, ...body));
+    } catch (error1) {
+      try {
+        res.json(await fromDB(command));
+      } catch (error2) {
+        console.error(error1);
+        console.error(error2);
+        res.status(500).json({ error: "Failed to command" });
+      }
+    }
+    try {
       await handleDB(command, ...(req.body ?? []));
     } catch (error) {
       console.error("Error handling DB operation");
       console.error(error);
-    }
-    try {
-      const body = req.body ?? [];
-      res.json(await requestSerial(command, ...body));
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to command", cause: `${error}` });
     }
   };
 }
@@ -180,20 +185,58 @@ async function handleDB<T extends CommandName>(
   }
 }
 
-async function fromDB<T extends CommandName>(command: T) {
+async function fromDB<T extends CommandName>(
+  command: T
+): Promise<CommandData<T>> {
   // -------------
   // Get Mode
   // -------------
   if (command == "set_mode") {
+    const rooms = await db.room.findMany({
+      select: {
+        id: true,
+        mode: true,
+      },
+    });
+    const modes = rooms
+      .map((r) => ({ ...r, n: +r.id.substring(r.id.length - 1) }))
+      .sort((a, b) => a.n - b.n)
+      .map((r) => r.mode);
+    return modes as CommandData<T>;
   }
   // -------------
   // Get Speed
   // -------------
   if (command == "set_speed") {
+    const rooms = await db.room.findMany({
+      select: {
+        id: true,
+        speed: true,
+      },
+    });
+    const modes = rooms
+      .map((r) => ({ ...r, n: +r.id.substring(r.id.length - 1) }))
+      .sort((a, b) => a.n - b.n)
+      .map((r) => r.speed);
+    return modes as CommandData<T>;
   }
   // -------------
   // Get Threshold
   // -------------
   if (command == "set_threshold") {
+    const rooms = await db.room.findMany({
+      select: {
+        id: true,
+        low: true,
+        medium: true,
+        high: true,
+      },
+    });
+    const modes = rooms
+      .map((r) => ({ ...r, n: +r.id.substring(r.id.length - 1) }))
+      .sort((a, b) => a.n - b.n)
+      .map((r) => [r.low, r.medium, r.high]);
+    return modes as CommandData<T>;
   }
+  return [0, 0, 0];
 }
