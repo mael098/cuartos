@@ -18,6 +18,11 @@ export type CommandMap = {
     data: [room1: Thresholds, room2: Thresholds, room3: Thresholds];
   };
 };
+// [
+//   [10,20,30],
+//   [10,20,30],
+//   [10,20,30],
+// ]
 export type CommandName = keyof CommandMap;
 export type CommandData<T extends CommandName> = CommandMap[T]["data"];
 export type CommandParams<T extends CommandName> = CommandMap[T]["params"];

@@ -3,8 +3,8 @@ import { parser, requestSerial } from "./serial.ts";
 import { db } from "./prisma/db.ts";
 import { Mode } from "./prisma/generated/enums.ts";
 import { CronJob } from "cron";
+import { rooms_id } from "./constants.ts";
 
-const rooms_id = { ROOM1: "room1", ROOM2: "room2", ROOM3: "room3" };
 type Events = {
   ready: [];
 };
