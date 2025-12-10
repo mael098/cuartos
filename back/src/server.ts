@@ -7,6 +7,7 @@ import cors from "cors";
 import { db } from "./prisma/db.ts";
 import { Temporal } from "@js-temporal/polyfill";
 import { createSession } from "better-sse";
+import { rooms_id } from "./constants.ts";
 
 const PORT = 8080;
 
@@ -21,6 +22,12 @@ app.use(
 
 function handle<T extends CommandName>(command: T) {
   return async (req: Request<{}, {}, CommandParams<T>>, res: Response) => {
+    try {
+      await handleDB(command, ...(req.body ?? []));
+    } catch (error) {
+      console.error("Error handling DB operation");
+      console.error(error);
+    }
     try {
       const body = req.body ?? [];
       res.json(await requestSerial(command, ...body));
@@ -90,3 +97,103 @@ app.get("/rt", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
+
+async function handleDB<T extends CommandName>(
+  command: T,
+  ...params: CommandParams<T>
+) {
+  // -------------
+  // Get Mode
+  // -------------
+  if (command == "set_mode") {
+    const [mode1, mode2, mode3] = params as CommandParams<"set_mode">;
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM1 },
+        data: { mode: mode1 },
+      });
+    } catch {}
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM2 },
+        data: { mode: mode2 },
+      });
+    } catch {}
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM3 },
+        data: { mode: mode3 },
+      });
+    } catch {}
+  }
+  // -------------
+  // Get Speed
+  // -------------
+  if (command == "set_speed") {
+    const [speed1, speed2, speed3] = params as CommandParams<"set_speed">;
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM1 },
+        data: { speed: speed1 },
+      });
+    } catch {}
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM2 },
+        data: { speed: speed2 },
+      });
+    } catch {}
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM3 },
+        data: { speed: speed3 },
+      });
+    } catch {}
+  }
+  // -------------
+  // Get Threshold
+  // -------------
+  if (command == "set_threshold") {
+    const [
+      [low1, medium1, high1],
+      [low2, medium2, high2],
+      [low3, medium3, high3],
+    ] = params as CommandParams<"set_threshold">;
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM1 },
+        data: { low: low1, medium: medium1, high: high1 },
+      });
+    } catch {}
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM2 },
+        data: { low: low2, medium: medium2, high: high2 },
+      });
+    } catch {}
+    try {
+      await db.room.update({
+        where: { id: rooms_id.ROOM3 },
+        data: { low: low3, medium: medium3, high: high3 },
+      });
+    } catch {}
+  }
+}
+
+async function fromDB<T extends CommandName>(command: T) {
+  // -------------
+  // Get Mode
+  // -------------
+  if (command == "set_mode") {
+  }
+  // -------------
+  // Get Speed
+  // -------------
+  if (command == "set_speed") {
+  }
+  // -------------
+  // Get Threshold
+  // -------------
+  if (command == "set_threshold") {
+  }
+}

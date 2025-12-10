@@ -167,30 +167,34 @@ void loop() {
     // --------------
     if (request["event"] == "set_mode") {
       // [mode1, mode2, mode3]
-      if (request["data"][0] == "manual") {
-        mode1 = false;
-      } else {
-        mode1 = true;
-      }
-      if (request["data"][1] == "manual") {
-        mode2 = false;
-      } else {
-        mode2 = true;
-      }
-      if (request["data"][2] == "manual") {
-        mode3 = false;
-      } else {
-        mode3 = true;
-      }
+      mode1 = request["params"][0] == "auto";
+      mode2 = request["params"][1] == "auto";
+      mode3 = request["params"][2] == "auto";
+      
+      StaticJsonDocument<512> response;
+      response["event"] = "set_mode";
+      response["id"] = request["id"];
+      JsonArray data = response["data"].to<JsonArray>();
+      String jsonString;
+      serializeJson(response, jsonString);
+      Serial.println(jsonString);
     }
     // --------------
     // SET SPEED
     // --------------
     if (request["event"] == "set_speed") {
       // [speed1, speed2, speed3]
-      speed1 = request["data"][0];
-      speed2 = request["data"][1];
-      speed3 = request["data"][2];
+      speed1 = request["params"][0];
+      speed2 = request["params"][1];
+      speed3 = request["params"][2];
+      
+      StaticJsonDocument<512> response;
+      response["event"] = "set_speed";
+      response["id"] = request["id"];
+      JsonArray data = response["data"].to<JsonArray>();
+      String jsonString;
+      serializeJson(response, jsonString);
+      Serial.println(jsonString);
     }
     // --------------
     // SET THRESHOLD
@@ -203,19 +207,27 @@ void loop() {
       // ]
 
       // threshold 1
-      threshold1_low = request["data"][0][0];
-      threshold1_medium = request["data"][0][1];
-      threshold1_high = request["data"][0][2];
+      threshold1_low = request["params"][0][0];
+      threshold1_medium = request["params"][0][1];
+      threshold1_high = request["params"][0][2];
 
       // threshold 2
-      threshold2_low = request["data"][1][0];
-      threshold2_medium = request["data"][1][1];
-      threshold2_high = request["data"][1][2];
+      threshold2_low = request["params"][1][0];
+      threshold2_medium = request["params"][1][1];
+      threshold2_high = request["params"][1][2];
 
       // threshold 3
-      threshold3_low = request["data"][2][0];
-      threshold3_medium = request["data"][2][1];
-      threshold3_high = request["data"][2][2];
+      threshold3_low = request["params"][2][0];
+      threshold3_medium = request["params"][2][1];
+      threshold3_high = request["params"][2][2];
+
+      StaticJsonDocument<512> response;
+      response["event"] = "set_threshold";
+      response["id"] = request["id"];
+      JsonArray data = response["data"].to<JsonArray>();
+      String jsonString;
+      serializeJson(response, jsonString);
+      Serial.println(jsonString);
     }
   }
   // --------------

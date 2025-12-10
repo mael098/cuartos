@@ -47,36 +47,52 @@ client.on("ready", async () => {
   const room3 = await db.room.findUnique({
     where: { name: rooms_id.ROOM3 },
   });
+  if (!room1 || !room2 || !room3) {
+    console.error("Fail to sync. One or more rooms not found in database");
+    return;
+  }
   try {
     await requestSerial(
       "set_mode",
-      room1?.mode || Mode.manual,
-      room2?.mode || Mode.manual,
-      room3?.mode || Mode.manual
+      room1.mode || Mode.manual,
+      room2.mode || Mode.manual,
+      room3.mode || Mode.manual
     );
+    console.log("moode sync");
+    console.table({
+      room_1: room1.mode || Mode.manual,
+      room_2: room2.mode || Mode.manual,
+      room_3: room3.mode || Mode.manual,
+    });
   } catch (error) {
     console.error("Error setting mode on ready");
     console.error(error);
   }
   try {
-    await requestSerial(
-      "set_speed",
-      room1?.speed || 0,
-      room2?.speed || 0,
-      room3?.speed || 0
-    );
+    await requestSerial("set_speed", room1.speed, room2.speed, room3.speed);
+    console.log("speed sync");
+    console.table({
+      rooom_1: room1.speed,
+      room_2: room2.speed,
+      room_3: room3.speed,
+    });
   } catch (error) {
     console.error("Error setting speed on ready");
     console.error(error);
   }
   try {
-    if (room1 && room2 && room3)
-      await requestSerial(
-        "set_threshold",
-        [room1.low, room1.medium, room1.high],
-        [room2.low, room2.medium, room2.high],
-        [room3.low, room3.medium, room3.high]
-      );
+    await requestSerial(
+      "set_threshold",
+      [room1.low, room1.medium, room1.high],
+      [room2.low, room2.medium, room2.high],
+      [room3.low, room3.medium, room3.high]
+    );
+    console.log("threshold sync");
+    console.table({
+      room_1: { low: room1.low, medium: room1.medium, high: room1.high },
+      room_2: { low: room2.low, medium: room2.medium, high: room2.high },
+      room_3: { low: room3.low, medium: room3.medium, high: room3.high },
+    });
   } catch (error) {
     console.error("Error setting thresholds on ready");
     console.error(error);
