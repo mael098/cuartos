@@ -26,7 +26,7 @@ function handle<T extends CommandName>(command: T) {
       res.json(await requestSerial(command, ...body));
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Failed to set mode" });
+      res.status(500).json({ error: "Failed to command", cause: `${error}` });
     }
   };
 }
@@ -69,7 +69,9 @@ app.post("/query", async (req, res) => {
     res.json(await db.history.findMany(req.body));
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to query history", cause: error });
+    res
+      .status(500)
+      .json({ error: "Failed to query history", cause: `${error}` });
   }
 });
 

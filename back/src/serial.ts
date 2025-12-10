@@ -50,9 +50,10 @@ export function requestSerial<T extends CommandName>(
   };
 
   parser.on("data", listener);
+  const error = new Error("Time end");
   setTimeout(() => {
-    reject(new Error("Time end"));
     parser.removeListener("data", listener);
+    reject(error);
   }, 3_000);
 
   return promise;
