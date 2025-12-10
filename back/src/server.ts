@@ -35,13 +35,13 @@ app.get("/temp", handle("get_temp"));
 
 app.get("/mode", handle("get_mode"));
 app.get("/speed", handle("get_speed"));
-app.get("/thresholds", handle("get_thresholds"));
+app.get("/threshold", handle("get_threshold"));
 
 app.post("/mode", handle("set_mode"));
 app.post("/speed", handle("set_speed"));
-app.post("/thresholds", handle("set_thresholds"));
+app.post("/threshold", handle("set_threshold"));
 
-app.get("/history", async (req, res) => {
+app.get("/history", async (_, res) => {
   const limit_hour = Temporal.Now.plainDateTimeISO()
     .with({
       minute: 0,

@@ -72,7 +72,7 @@ client.on("ready", async () => {
   try {
     if (room1 && room2 && room3)
       await requestSerial(
-        "set_thresholds",
+        "set_threshold",
         [room1.low, room1.medium, room1.high],
         [room2.low, room2.medium, room2.high],
         [room3.low, room3.medium, room3.high]

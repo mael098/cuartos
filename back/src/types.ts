@@ -8,14 +8,14 @@ export type CommandMap = {
   get_temp: { params: []; data: [room1: number, room2: number, room3: number] };
   get_mode: { params: []; data: [room1: Mode, room2: Mode, room3: Mode] };
   get_speed: { params: []; data: [room1: Speed, room2: Speed, room3: Speed] };
-  get_thresholds: {
+  get_threshold: {
     params: [];
     data: [room1: Thresholds, room2: Thresholds, room3: Thresholds];
   };
   // set events
   set_mode: { params: [room1: Mode, room2: Mode, room3: Mode]; data: null };
   set_speed: { params: [room1: Speed, room2: Speed, room3: Speed]; data: null };
-  set_thresholds: {
+  set_threshold: {
     params: [room1: Thresholds, room2: Thresholds, room3: Thresholds];
     data: null;
   };

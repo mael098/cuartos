@@ -1,5 +1,6 @@
 #include "DHT.h"
 #include "ArduinoJson.h"
+#include <AFMotor.h>
 
 #define DHTPIN1 9
 #define DHTPIN2 10
@@ -8,7 +9,7 @@
 
 DHT dht1(DHTPIN1, DHTTYPE);
 DHT dht2(DHTPIN2, DHTTYPE);
-DHT dht2(DHTPIN3, DHTTYPE);
+DHT dht3(DHTPIN3, DHTTYPE);
 
 AF_DCMotor motor1(1); // M1
 AF_DCMotor motor2(2); // M2
@@ -83,7 +84,7 @@ void loop() {
       data.add(t3);
 
       String jsonString;
-      serializeJson(doc, jsonString);
+      serializeJson(response, jsonString);
       Serial.println(jsonString);
     }
     // --------------
@@ -111,7 +112,7 @@ void loop() {
       }
 
       String jsonString;
-      serializeJson(doc, jsonString);
+      serializeJson(response, jsonString);
       Serial.println(jsonString);
     }
     // --------------
@@ -127,15 +128,15 @@ void loop() {
       data.add(speed3);
 
       String jsonString;
-      serializeJson(doc, jsonString);
+      serializeJson(response, jsonString);
       Serial.println(jsonString);
     }
     // --------------
     // GET THRESHOLD
     // --------------
-    if (request["event"] == "get_speed") {
+    if (request["event"] == "get_threshold") {
       StaticJsonDocument<512> response;
-      response["event"] = "get_speed";
+      response["event"] = "get_threshold";
       response["id"] = request["id"];
       JsonArray data = response["data"].to<JsonArray>();
 
@@ -158,7 +159,7 @@ void loop() {
       data.add(threshold3);
 
       String jsonString;
-      serializeJson(doc, jsonString);
+      serializeJson(response, jsonString);
       Serial.println(jsonString);
     }
     // --------------
@@ -194,7 +195,7 @@ void loop() {
     // --------------
     // SET THRESHOLD
     // --------------
-    if (request["event"] == "set_speed") {
+    if (request["event"] == "set_threshold") {
       // [
       //  [threshold1_low, threshold1_medium, threshold1_high],
       //  [threshold2_low, threshold2_medium, threshold2_high],
@@ -220,7 +221,7 @@ void loop() {
   // --------------
   // THRESHOLD HANDLER
   // --------------
-  if (millis() - last_monitor > 5_000) {
+  if (millis() - last_monitor > 5000) {
     last_monitor = millis();
     // --------------
     // THRESHOLD ROOM 1
