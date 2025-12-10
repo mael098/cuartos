@@ -4,6 +4,8 @@ import type { Request, Response } from "express";
 import type { CommandName, CommandParams } from "./types.ts";
 import "./sync.ts";
 import cors from "cors";
+import { db } from "./prisma/db.ts";
+import { Temporal } from "@js-temporal/polyfill";
 
 const PORT = 8080;
 
@@ -37,6 +39,38 @@ app.get("/thresholds", handle("get_thresholds"));
 app.post("/mode", handle("set_mode"));
 app.post("/speed", handle("set_speed"));
 app.post("/thresholds", handle("set_thresholds"));
+
+app.get("/history", async (req, res) => {
+  const limit_hour = Temporal.Now.plainDateTimeISO()
+    .with({
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0,
+      nanosecond: 0,
+    })
+    .subtract({
+      months: 1,
+    })
+    .toZonedDateTime("America/Monterrey").epochMilliseconds;
+  const history = await db.history.findMany({
+    where: {
+      date: {
+        gte: new Date(limit_hour),
+      },
+    },
+  });
+  res.json(history);
+});
+
+app.post("/query", async (req, res) => {
+  try {
+    res.json(await db.history.findMany(req.body));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to query history", cause: error });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
