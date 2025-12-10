@@ -57,14 +57,37 @@ export function generate_simulated_data(room_id: string): SimulatedReading[] {
   return data;
 }
 
-console.table(generate_simulated_data(rooms_id.ROOM1));
-writeFile(
-  "datos.json",
-  JSON.stringify(generate_simulated_data(rooms_id.ROOM1)),
-  (err) => {
-    console.log(err);
-  }
-);
+await db.room.createMany({
+  data: [
+    {
+      id: rooms_id.ROOM1,
+      name: rooms_id.ROOM1,
+      mode: "manual",
+      speed: 0,
+      low: 20,
+      medium: 25,
+      high: 30,
+    },
+    {
+      id: rooms_id.ROOM2,
+      name: rooms_id.ROOM2,
+      mode: "manual",
+      speed: 0,
+      low: 20,
+      medium: 25,
+      high: 30,
+    },
+    {
+      id: rooms_id.ROOM3,
+      name: rooms_id.ROOM3,
+      mode: "manual",
+      speed: 0,
+      low: 20,
+      medium: 25,
+      high: 30,
+    },
+  ],
+});
 
 await db.history.createMany({
   data: [
