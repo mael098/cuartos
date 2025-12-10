@@ -4,6 +4,7 @@ import { SimpleInput } from "@/components/inputs"
 import { Button } from "@/components/button"
 import { RoomId, roomsStore } from "@/app/store"
 import { useStoreValue } from "@simplestack/store/react"
+import { setRoomThresholds } from "@/lib/backend"
 
 type ThresholdSettingsProps = {
   id: RoomId
@@ -12,8 +13,12 @@ type ThresholdSettingsProps = {
 export function ThresholdSettings({ id }: ThresholdSettingsProps) {
   const thresholds = useStoreValue(roomsStore.select(id)!.select!('thresholds'))!
 
-  const handleSave = () => {
-    roomsStore.select(id)!.select!('thresholds').set(thresholds)
+  const handleSave = async () => {
+    try {
+      await setRoomThresholds(id, thresholds)
+    } catch (error) {
+      console.error('No se pudo guardar los umbrales', error)
+    }
   }
 
   return (
