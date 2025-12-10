@@ -1,23 +1,26 @@
 import type { UUID } from "crypto";
-import type { Mode } from "./prisma/generated/enums";
+import type { Mode } from "./prisma/generated/enums.ts";
 
 type Speed = number;
 type Thresholds = [low: number, medium: number, high: number];
 export type CommandMap = {
+  // get events
   get_temp: { params: []; data: [room1: number, room2: number, room3: number] };
-  set_speed: { params: [room1: Speed, room2: Speed, room3: Speed]; data: null };
-  set_thresholds: {
-    params: [room1: Thresholds, room2: Thresholds, room3: Thresholds];
-    data: null;
-  };
-  set_mode: { params: [room1: Mode, room2: Mode, room3: Mode]; data: null };
   get_mode: { params: []; data: [room1: Mode, room2: Mode, room3: Mode] };
   get_speed: { params: []; data: [room1: Speed, room2: Speed, room3: Speed] };
   get_thresholds: {
     params: [];
     data: [room1: Thresholds, room2: Thresholds, room3: Thresholds];
   };
+  // set events
+  set_mode: { params: [room1: Mode, room2: Mode, room3: Mode]; data: null };
+  set_speed: { params: [room1: Speed, room2: Speed, room3: Speed]; data: null };
+  set_thresholds: {
+    params: [room1: Thresholds, room2: Thresholds, room3: Thresholds];
+    data: null;
+  };
 };
+// thresholds example
 // [
 //   [10,20,30],
 //   [10,20,30],
