@@ -25,6 +25,7 @@
     "@js-temporal/polyfill": "0.5.1",
     "@prisma/adapter-better-sqlite3": "7.0.0",
     "@prisma/client": "^7.0.0",
+    "better-sse": "^0.15.1",
     "cors": "2.8.5",
     "cron": "4.3.4",
     "express": "5.1.0",

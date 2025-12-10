@@ -6,6 +6,7 @@ import "./sync.ts";
 import cors from "cors";
 import { db } from "./prisma/db.ts";
 import { Temporal } from "@js-temporal/polyfill";
+import { createSession } from "better-sse";
 
 const PORT = 8080;
 
@@ -70,6 +71,18 @@ app.post("/query", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Failed to query history", cause: error });
   }
+});
+
+app.get("/rt", async (req, res) => {
+  const session = await createSession(req, res);
+
+  const interval = setInterval(async () => {
+    session.push(await requestSerial("get_temp"));
+  }, 1_000);
+
+  session.once("disconnected", () => {
+    clearInterval(interval);
+  });
 });
 
 app.listen(PORT, () => {
