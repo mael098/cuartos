@@ -13,7 +13,7 @@ const ROOM_ORDER: RoomId[] = [
   ROOM_KEYS.ROOM2,
   ROOM_KEYS.ROOM3,
 ];
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = "/api/backend";
 
 function roomIndex(id: RoomId) {
   return ROOM_ORDER.indexOf(id);
@@ -32,6 +32,7 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -110,4 +111,14 @@ export async function refreshTemperatures() {
   const temps = await fetchTemperatures();
   updateAllTemperatures(temps);
   return temps;
+}
+
+export type HistoryEntry = {
+  room_id: string;
+  date: string;
+  temp: number;
+};
+
+export async function fetchHistory() {
+  return getJson<HistoryEntry[]>("/history");
 }

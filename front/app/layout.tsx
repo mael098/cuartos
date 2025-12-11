@@ -27,6 +27,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <nav className="bg-card border-b border-border">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center justify-between">
+              <div className="flex items-center gap-8">
+                <h2 className="text-xl font-bold text-card-foreground">Control de Clima</h2>
+                <div className="flex gap-4">
+                  <a href="/" className="text-sm text-muted-foreground hover:text-card-foreground transition-colors">
+                    Dashboard
+                  </a>
+                  <a href="/historia" className="text-sm text-muted-foreground hover:text-card-foreground transition-colors">
+                    Historial
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
         {children}
       </body>
     </html>

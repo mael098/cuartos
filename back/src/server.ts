@@ -47,11 +47,46 @@ app.get("/temp", handle("get_temp"));
 
 app.get("/mode", handle("get_mode"));
 app.get("/speed", handle("get_speed"));
-app.get("/threshold", handle("get_threshold"));
+app.get("/thresholds", handle("get_threshold"));
 
 app.post("/mode", handle("set_mode"));
 app.post("/speed", handle("set_speed"));
-app.post("/threshold", handle("set_threshold"));
+app.post("/thresholds", handle("set_threshold"));
+
+app.get("/rooms", async (req: Request, res: Response) => {
+  try {
+    const [mode, speed, thresholds] = await Promise.all([
+      fromDB("get_mode"),
+      fromDB("get_speed"),
+      fromDB("get_threshold"),
+    ]);
+    res.json({
+      rooms: [
+        {
+          id: "room1",
+          mode: mode[0],
+          speed: speed[0],
+          thresholds: thresholds[0],
+        },
+        {
+          id: "room2",
+          mode: mode[1],
+          speed: speed[1],
+          thresholds: thresholds[1],
+        },
+        {
+          id: "room3",
+          mode: mode[2],
+          speed: speed[2],
+          thresholds: thresholds[2],
+        },
+      ],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch rooms" });
+  }
+});
 
 app.get("/history", async (_, res) => {
   const limit_hour = Temporal.Now.plainDateTimeISO()
